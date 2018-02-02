@@ -54,7 +54,7 @@ class Extractor:
 
                 # add the timestamp and end line
                 self.newTimeStamp()
-                self.string_return += self.time_stamp
+                self.string_return += str(self.time_stamp)
                 self.string_return += "\r\n"
 
             # close the file
