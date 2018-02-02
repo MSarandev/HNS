@@ -2,19 +2,20 @@
 # January-June 2018
 # All Rights Reserved
 
-# This file needs to be as small as possible, no OOP will be implemented
 import os
+from data_extractor import Extractor
 
 # Check what OS the system is running (Unix - posix, Win - nt)
 if (os.name == "posix"):
-    res_string = ""
+    # launch the command and save to test.txt
+    res_string = os.system("iw dev wlan0 scan | cat > test.txt")
 
-    res_string = os.system("airport -s")
+    # deploy
+    ex1 = Extractor()
 
-    if(res_string == ""):
-        # operation failed, try Linux style command
-        res_string = os.system("iw dev wlan0 scan | grep SSID")
+    # extract the data
+    ex1.extractData("test.txt")
 
-    
+    print ex1.string_return
 elif (os.name == "nt"):
-    print "Windows yay"
+    print "Windows is not supported"
