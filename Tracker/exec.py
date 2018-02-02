@@ -16,6 +16,5 @@ if (os.name == "posix"):
     # extract the data
     ex1.extractData("test.txt")
 
-    print ex1.string_return
 elif (os.name == "nt"):
     print "Windows is not supported"
