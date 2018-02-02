@@ -52,10 +52,10 @@ class Extractor:
                     # splice and push to string
                     self.string_return += line_x[line_x.find(":"):line_x.find("/n")]
 
-                # add the timestamp and end line
-                self.newTimeStamp()
-                self.string_return += str(self.time_stamp)
-                self.string_return += "\r\n"
+                    # add the timestamp and end line
+                    self.newTimeStamp()
+                    self.string_return += ", " + str(self.time_stamp)
+                    self.string_return += "\r\n"
 
             # close the file
             f.close()
