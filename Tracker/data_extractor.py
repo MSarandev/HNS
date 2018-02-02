@@ -14,7 +14,7 @@ class Extractor:
 
     # simply generates a new timestamp
     def newTimeStamp(self):
-       self.time_stamp = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+       self.time_stamp = datetime.datetime.now()
 
     # Custom method
     def extractData(self, file_path):
