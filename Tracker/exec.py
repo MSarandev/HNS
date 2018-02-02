@@ -8,7 +8,7 @@ from data_extractor import Extractor
 # Check what OS the system is running (Unix - posix, Win - nt)
 if (os.name == "posix"):
     # launch the command and save to test.txt
-    #res_string = os.system("iw dev wlan0 scan | cat > test.txt")
+    res_string = os.system("iw dev wlan0 scan | cat > test.txt")
 
     # deploy
     ex1 = Extractor()
