@@ -4,7 +4,7 @@
 
 # Purpose: extract all useful information from a text dump
 
-import datetime, requests
+import datetime, requests, base64
 
 class Extractor:
     def __init__(self,id):
@@ -88,3 +88,56 @@ class Extractor:
                           files=files, timeout=5)
 
         r.close()  # close the conn
+
+    # Encrypt the packet
+    def encryptFile(self, file, key):
+        """
+
+        Code found on https://gist.github.com/ilogik/6f9431e4588015ecb194
+        Modified to a minimum extent
+        Based on Vigenere cipher
+
+        """
+        file_to_save = open("EE_"+file, 'a')  # define the file
+
+        with open(file) as f:
+            lines = f.readlines()  # feed line by line
+
+            for line_x in lines:
+                encoded_chars = []  # define the char container
+                for i in xrange(len(line_x)):
+                    # for each char in the key
+                    key_c = key[i % len(key)]
+                    # fetch the char in the line
+                    encoded_c = chr(ord(line_x[i]) + ord(key_c) % 256)
+                    # encrypt the char
+                    encoded_chars.append(encoded_c)
+                # re-create the string for this line
+                encoded_string = "".join(encoded_chars)
+                # save to the file
+                file_to_save.write(base64.urlsafe_b64encode(encoded_string)+"\r\n")
+
+        # close the files to free resources
+        f.close()
+        file_to_save.close()
+
+    # Decrypt Function (DEBUG __ REMOVE IN DEPLOY)
+    def decryptFile(self, file, key):
+        file_to_save = open("DE_" + file, 'a')
+
+        with open(file) as f:
+            lines = f.readlines()
+
+            for line_x in lines:
+                # Test decode
+                decoded_chars = []
+                string = base64.urlsafe_b64decode(line_x)
+                for i in xrange(len(string)):
+                    key_c = key[i % len(key)]
+                    encoded_c = chr((ord(string[i]) - ord(key_c)) % 256)
+                    decoded_chars.append(encoded_c)
+                decoded_string = "".join(decoded_chars)
+                file_to_save.write(decoded_string)
+
+        f.close()
+        file_to_save.close()
