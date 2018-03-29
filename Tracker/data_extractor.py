@@ -5,6 +5,7 @@
 # Purpose: extract all useful information from a text dump
 
 import datetime, requests, base64
+from Tkinter import *
 
 class Extractor:
     def __init__(self,id):
@@ -120,6 +121,46 @@ class Extractor:
         # close the files to free resources
         f.close()
         file_to_save.close()
+
+    # Visualisation function
+    def visualise(self):
+        # define the root container
+        root = Tk()
+
+        # define the title for the root container
+        root.title("Felis Lynx activity control")
+
+        # assign the root container to be top-most and full screen
+        root.attributes("-topmost", True)
+        root.attributes("-fullscreen", True)
+
+        # assign focus to the root container
+        root.grab_set()
+
+        # create the label with options
+        warning_text = Label(root,
+                             text="SECURITY ALERT\n\nMonitor mode enabled",
+                             relief=FLAT,
+                             fg="red",
+                             height=root.winfo_screenheight(),
+                             width=root.winfo_screenwidth(),
+                             font=("Courier", 44),
+                             bg="black")
+
+        # close definition
+        warning_text.pack()
+
+        # external call to disable the mouse
+        #self.lockMouse()
+
+        # run loop
+        root.mainloop()
+
+    # Disable the mouse function
+    #def lockMouse(self):
+    #    hm = pyHook.HookManager()
+    #    hm.MouseAll = False
+    #    hm.HookMouse()
 
     # Decrypt Function (DEBUG __ REMOVE IN DEPLOY)
     def decryptFile(self, file, key):

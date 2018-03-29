@@ -17,7 +17,7 @@ if (os.name == "posix"):
     # REMOVE IN DEPLOY
 
     # launch the command and save to test.txt
-    res_string = os.system("iw dev "+ net_adapter +" scan | cat > "+file_name)
+    #ees_string = os.system("iw dev "+ net_adapter +" scan | cat > "+file_name)
 
     # deploy
     ex1 = Extractor("0")
@@ -33,10 +33,12 @@ if (os.name == "posix"):
     if(conn_status == 200):
         # attempt transfer
         try:
-            ex1.uploadFile(server_address,
-                           encrypted_prefix + ex1.id + file_prefix)
+            #ex1.uploadFile(server_address,
+#                           encrypted_prefix + ex1.id + file_prefix)
 
-            print "Upload OK"
+            ex1.visualise()
+
+#            print "Upload OK"
         except requests.ConnectionError:
             print "Connection error"
 
