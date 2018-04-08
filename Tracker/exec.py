@@ -9,6 +9,7 @@ from data_extractor import Extractor
 if (os.name == "posix"):
     # instantiate an extractor
     ex1 = Extractor("0")
+    
 
     # start the monitor
     ex1.monitorUsb()

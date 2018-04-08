@@ -37,6 +37,7 @@ class Extractor:
 
     # Custom methods
 
+
     # Data extraction below
     def extractData(self, file_path, file_prefix):
         with open(file_path) as f:
