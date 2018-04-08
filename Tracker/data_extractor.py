@@ -4,7 +4,9 @@
 
 # Purpose: extract all useful information from a text dump
 
-import datetime, requests, base64
+import datetime, base64, os, requests
+# DOESN'T WORK OUTSIDE OF LINUX
+import pyudev
 from Tkinter import *
 
 class Extractor:
@@ -13,12 +15,28 @@ class Extractor:
         self.string_return = ""
         self.time_stamp = datetime.datetime.now()
         self.id = id  # give the tracker a unique id
+        # define the variables
+        # allows for easy changes
+        self.server_address = "192.168.0.25:8000"
+        self.file_name = "test.txt"
+        self.file_prefix = "_Capture.txt"
+        self.net_adapter = "eth0"
+        self.encrypted_prefix = "EE_"
+        # REMOVE IN DEPLOY
+        self.encrypt_key = "74e6f7298a9c2d168935f58c001bad88"
+        # set up the USB monitoring
+        self.context = pyudev.Context()
+        self.monitor = pyudev.Monitor.from_netlink(self.context)
+        self.monitor.filter_by(subsystem='usb')
+        self.key_id = "1-1" # specify the USB key ID
+
 
     # simply generates a new timestamp
     def newTimeStamp(self):
        self.time_stamp = datetime.datetime.now()
 
-    # Custom method
+    # Custom methods
+
     # Data extraction below
     def extractData(self, file_path, file_prefix):
         with open(file_path) as f:
@@ -156,12 +174,6 @@ class Extractor:
         # run loop
         root.mainloop()
 
-    # Disable the mouse function
-    #def lockMouse(self):
-    #    hm = pyHook.HookManager()
-    #    hm.MouseAll = False
-    #    hm.HookMouse()
-
     # Decrypt Function (DEBUG __ REMOVE IN DEPLOY)
     def decryptFile(self, file, key):
         file_to_save = open("DE_" + file, 'a')
@@ -182,3 +194,51 @@ class Extractor:
 
         f.close()
         file_to_save.close()
+
+    # Tracking function
+    def tracking(self):
+        # call to block the UI
+        # ! WARNING !
+        # "LOCKS" DEVICE UI, NO INTERACTION POSSIBLE
+        # ! WARNING !
+        self.visualise()
+
+        # run the script in terminal (list all networks)
+        os.system("iw dev " + self.net_adapter +
+                  " scan | cat > " + self.file_name)
+
+        # call to extract the data received
+        self.extractData(self.file_name, self.file_prefix)
+
+        # encrypt the file
+        self.encryptFile(self.id + self.file_prefix,
+                         self.encrypt_key)
+
+        # check the connection with the server
+        conn_status = self.checkHealth(self.server_address)
+
+        # if a connection can be established with the server...
+        if conn_status == 200:
+            # attempt transfer
+            try:
+                # call to the upload function
+                self.uploadFile(self.server_address,
+                                self.encrypted_prefix +
+                                self.id + self.file_prefix)
+            except requests.ConnectionError:
+                # connection failed, for debug print info
+                print "CE-1"
+
+    # Monitor the USB activity
+    def monitorUsb(self):
+        # start the module
+        self.monitor.start()
+
+        # iterate over all USB devices
+        for device in iter(self.monitor.poll, None):
+
+            # look for the key
+            if device.sys_name == self.key_id:
+                # device lost, trigger the tracking
+                print "Tracking ON"
+                self.tracking()
